@@ -11,7 +11,7 @@ Este monorepo integra los diferentes proyectos que desarrollaran a lo largo del 
 ## 3. Lógica del Desarrollo  :speech_balloon:
 ### Tarea 2
 
-- *Regresión Lineal
+- *Regresión Lineal*
 
 **¿Qué es?:** La regresión lineal es una técnica estadística que se utiliza para modelar la relación entre una variable dependiente (la variable que se está tratando de predecir) y una o más variables independientes (predictores o variables de entrada). Se asume que esta relación es lineal, lo que significa que se puede representar mediante una ecuación de una línea recta.
 
@@ -20,7 +20,7 @@ Simplicidad: La regresión lineal es fácil de entender e interpretar. La relaci
 Interpretación de coeficientes: Permite la interpretación de los coeficientes del modelo, lo que significa que se pueden identificar las contribuciones relativas de cada predictor en la variable dependiente.
 Predicción: Se puede utilizar para hacer predicciones numéricas en función de los valores de las variables predictoras.
 
-- *Regresión Lógistica
+- *Regresión Lógistica*
   
 **¿Qué es?:** La regresión logística es una técnica utilizada para modelar y predecir variables binarias o categóricas (por ejemplo, sí/no, 0/1). A diferencia de la regresión lineal, la regresión logística se utiliza para problemas de clasificación en lugar de predicción numérica. Estima la probabilidad de que una observación pertenezca a una categoría específica.
 
@@ -29,7 +29,7 @@ Clasificación binaria: Es efectiva para problemas de clasificación binaria, co
 Probabilidades estimadas: Proporciona estimaciones de probabilidades de pertenencia a una clase, lo que permite tomar decisiones basadas en umbrales de probabilidad.
 Flexibilidad: Se puede extender a problemas de clasificación multiclase utilizando técnicas como la regresión logística multinomial.
 
-- *Árbol de Desiciones
+- *Árbol de Desiciones*
 
 **¿Qué es?:** Un árbol de decisión es una técnica de aprendizaje automático que crea un modelo en forma de un árbol. Cada nodo del árbol representa una pregunta o una decisión basada en características particulares, y las ramas del árbol representan las posibles respuestas o resultados. Los árboles de decisión se utilizan tanto en problemas de clasificación como en problemas de regresión.
 

@@ -6,6 +6,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+import matplotlib.cm as cm
 
 # Cargar los datos
 df = pd.read_csv('./framingham.csv')
@@ -19,15 +20,8 @@ np.random.seed(1234)
 # Tomar una muestra aleatoria de 500 observaciones
 smp = df.sample(n=500)
 
-# Convertir la columna 'male' en un factor (categórico)
-smp['male'] = smp['male'].astype('category')
-
-# Gráfico de dispersión bivariado
-plt.figure(figsize=(10, 6))
-sns.scatterplot(x=smp['age'], y=smp['TenYearCHD'])
-plt.xlabel('Age')
-plt.ylabel('TenYearCHD')
-plt.title('Binned TenYearCHD vs Age')
+# Gráfico de dispersión bivariado y curva de regresión logística
+plt.figure(figsize=(12, 6))
 
 # Preparar los datos para la regresión logística
 X = smp[['age']]  # Variable independiente
@@ -69,5 +63,14 @@ x_df = pd.DataFrame({'age': x[:, 0]})
 x_scaled = scaler.transform(x_df)
 y_prob = modelo.predict_proba(x_scaled)[:, 1]
 
-plt.plot(x, y_prob, color='magenta')
+# Colormap de estilo arcoíris para colorear los puntos
+colors = cm.rainbow(np.linspace(0, 1, len(smp)))
+
+# Gráfico de puntos con regresión logística
+plt.scatter(smp['age'], smp['TenYearCHD'], color=colors, label='Puntos de datos')
+plt.plot(x, y_prob, color='black', label='Regresión Logística')
+plt.xlabel('Age')
+plt.ylabel('TenYearCHD')
+plt.title('Binned TenYearCHD vs Age with Logistic Regression')
+plt.legend()
 plt.show()

@@ -1,42 +1,50 @@
+# Importar las bibliotecas necesarias
 import pandas as pd
-from sklearn.model_selection import train_test_split
+import matplotlib.pyplot as plt
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from sklearn.model_selection import train_test_split
+from sklearn import tree
 
-# Cargar el archivo CSV (asegúrate de que no tiene encabezados)
-column_names = [
+# Nombres de las columnas en la misma secuencia que aparecen en el archivo CSV
+nombres_columnas = [
     "num_class", "alcohol", "malic_acid", "ash", "alcalinity_of_ash",
     "magnesium", "total_phenols", "flavanoids", "nonflavanoid_phenols",
     "proanthocyanins", "color_intensity", "hue", "od280_od315_of_diluted_wines",
     "proline"
 ]
-df = pd.read_csv('./wine.data', header=None, names=column_names)
 
-# Dividir los datos en características (X) y etiquetas (y)
-X = df.drop('num_class', axis=1)  # Características
-y = df['num_class']  # Etiquetas
+# Cargar el archivo CSV sin encabezados y usando los nombres de columna proporcionados
+df = pd.read_csv('./wine.data', header=None, names=nombres_columnas)
+df
 
-# Dividir el conjunto de datos en conjuntos de entrenamiento y prueba
+# Seleccionar las columnas relevantes (variables independientes) para el análisis
+# Excluir la columna "num_class" ya que es la variable objetivo
+features = [
+    'alcohol', 'malic_acid', 'ash', 'alcalinity_of_ash', 'magnesium',
+    'total_phenols', 'flavanoids', 'nonflavanoid_phenols', 'proanthocyanins',
+    'color_intensity', 'hue', 'od280_od315_of_diluted_wines', 'proline'
+]
+
+# Crear conjuntos de características (X) y la variable objetivo (y)
+X = df[features]
+y = df['num_class']
+
+# Dividir los datos en conjuntos de entrenamiento y prueba
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Crear un modelo de árbol de decisión
-modelo_arbol = DecisionTreeClassifier()
+# Crear y entrenar el modelo de árbol de decisión
+model = DecisionTreeClassifier()
+model.fit(X_train, y_train)
 
-# Entrenar el modelo con los datos de entrenamiento
-modelo_arbol.fit(X_train, y_train)
-
-# Hacer predicciones en el conjunto de prueba
-y_pred = modelo_arbol.predict(X_test)
+# Realizar predicciones en el conjunto de prueba
+y_pred = model.predict(X_test)
 
 # Calcular la precisión del modelo
-accuracy = accuracy_score(y_test, y_pred)
+accuracy = (y_pred == y_test).mean()
 print(f'Precisión del modelo: {accuracy * 100:.2f}%')
 
-# Mostrar la matriz de confusión y el informe de clasificación
-conf_matrix = confusion_matrix(y_test, y_pred)
-print('Matriz de Confusión:')
-print(conf_matrix)
-
-report = classification_report(y_test, y_pred)
-print('Informe de Clasificación:')
-print(report)
+# Crear y mostrar el árbol de decisión
+plt.figure(figsize=(15, 10))
+tree.plot_tree(model, feature_names=features, class_names=[str(i) for i in range(1, 4)], filled=True, rounded=True)
+plt.title("Árbol de Decisión para Clasificación de Vinos")
+plt.show()

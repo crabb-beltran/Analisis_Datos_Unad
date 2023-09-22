@@ -1,31 +1,40 @@
-import pandas as pd
+import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
+import seaborn as sns
+from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
-from sklearn.impute import SimpleImputer
 
+# Cargar los datos
 df = pd.read_csv('./framingham.csv')
 
-# Crear un imputador para llenar los valores faltantes con la media
-imputer = SimpleImputer(strategy='mean')
+# Remover campos con datos faltantes
+df = df.dropna()
 
-# Dividir los datos en características (X) y etiquetas (y)
-X = df.drop('TenYearCHD', axis=1)  # Características
-y = df['TenYearCHD']  # Etiquetas
+# Establecer una semilla para reproducibilidad
+np.random.seed(1234)
 
-# Dividir el conjunto de datos en conjuntos de entrenamiento y prueba
+# Tomar una muestra aleatoria de 500 observaciones
+smp = df.sample(n=500)
+
+# Convertir la columna 'male' en un factor (categórico)
+smp['male'] = smp['male'].astype('category')
+
+# Gráfico de dispersión bivariado
+plt.figure(figsize=(10, 6))
+sns.scatterplot(x=smp['age'], y=smp['TenYearCHD'])
+plt.xlabel('Age')
+plt.ylabel('TenYearCHD')
+plt.title('Binned TenYearCHD vs Age')
+
+# Preparar los datos para la regresión logística
+X = smp[['age']]  # Variable independiente
+y = smp['TenYearCHD']  # Variable dependiente
+
+# Dividir los datos en conjuntos de entrenamiento y prueba
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-# Eliminar filas con valores faltantes en los conjuntos de entrenamiento y prueba
-rows_with_nan_train = np.isnan(X_train).any(axis=1)
-X_train = X_train[~rows_with_nan_train]
-y_train = y_train[~rows_with_nan_train]
-
-rows_with_nan_test = np.isnan(X_test).any(axis=1)
-X_test = X_test[~rows_with_nan_test]
-y_test = y_test[~rows_with_nan_test]
 
 # Estandarizar las características para que tengan media 0 y desviación estándar 1
 scaler = StandardScaler()
@@ -50,6 +59,15 @@ conf_matrix = confusion_matrix(y_test, y_pred)
 print('Matriz de Confusión:')
 print(conf_matrix)
 
-report = classification_report(y_test, y_pred)
+report = classification_report(y_test, y_pred, zero_division=1)
 print('Informe de Clasificación:')
 print(report)
+
+# Gráfica de la curva de regresión logística
+x = np.linspace(X['age'].min(), X['age'].max(), 100).reshape(-1, 1)
+x_df = pd.DataFrame({'age': x[:, 0]})
+x_scaled = scaler.transform(x_df)
+y_prob = modelo.predict_proba(x_scaled)[:, 1]
+
+plt.plot(x, y_prob, color='magenta')
+plt.show()
